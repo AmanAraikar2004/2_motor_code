@@ -1,0 +1,107 @@
+#include "BluetoothSerial.h"
+
+BluetoothSerial SerialBT;
+
+char receivedChar;// received value will be stored as CHAR in this variable
+
+const int MR1 = 12; //ESP32 pins (MR=Right Motor) (ML=Left Motor) (1=Forward) (2=Backward)
+const int MR2 = 14; 
+const int EN1 = 13;
+const int ML1 = 27;
+const int ML2 = 26;
+const int EN2 = 25;
+
+void setup() {
+  Serial.begin(115200);
+  SerialBT.begin("ESP32"); //You can change your Bluetooth device name
+  pinMode(MR1, OUTPUT); 
+  pinMode(MR2, OUTPUT);
+  pinMode(EN1, OUTPUT); 
+  pinMode(EN2, OUTPUT);
+  pinMode(ML1, OUTPUT);
+  pinMode(ML2, OUTPUT);
+}
+
+void Forward(){
+        //RIGHT MOTOR
+      digitalWrite(MR1,HIGH);//MOVE FRONT
+      digitalWrite(MR2,LOW); //MOVE BACK
+      digitalWrite(EN1,HIGH);
+      //LEFT MOTOR
+      digitalWrite(ML1,LOW);//MOVE BACK
+      digitalWrite(ML2,HIGH);//MOVE FRONT
+      digitalWrite(EN2,HIGH);
+}
+void Backward(){
+      digitalWrite(MR1,LOW);
+      digitalWrite(MR2,HIGH);
+      digitalWrite(EN1,HIGH);
+      digitalWrite(ML1,HIGH);
+      digitalWrite(ML2,LOW);
+      digitalWrite(EN2,HIGH);
+}
+void Left(){
+      digitalWrite(MR1,HIGH);
+      digitalWrite(MR2,LOW);
+      digitalWrite(EN1,HIGH);
+      digitalWrite(ML1,HIGH);
+      digitalWrite(ML2,LOW);
+      digitalWrite(EN2,HIGH);
+}
+void Right(){
+      digitalWrite(MR1,LOW);
+      digitalWrite(MR2,HIGH);
+      digitalWrite(EN1,HIGH);
+      digitalWrite(ML1,LOW);
+      digitalWrite(ML2,HIGH);
+      digitalWrite(EN2,HIGH);
+}
+void Stop(){
+      digitalWrite(MR1,LOW); 
+      digitalWrite(MR2,LOW);
+      digitalWrite(EN1,LOW);
+      digitalWrite(ML1,LOW); 
+      digitalWrite(ML2,LOW);
+      digitalWrite(EN2,LOW);
+       
+}
+
+void loop() {
+    receivedChar =(char)SerialBT.read();
+
+  if (Serial.available()) {
+    SerialBT.write(Serial.read());
+  
+  }
+  if (SerialBT.available()) {
+     
+    Serial.print ("Received:");//print on serial monitor
+    Serial.println(receivedChar);//print on serial monitor    
+    
+    if(receivedChar == 'F')
+    {
+      Forward();
+       
+    }
+    if(receivedChar == 'G')
+    {
+      Backward(); 
+    }         
+     if(receivedChar == 'L')
+    {
+
+      Left();
+    }        
+    if(receivedChar == 'R')
+    {
+
+      Right(); 
+    }
+    if(receivedChar == 'S')
+    {
+      Stop();
+    }
+  }
+  delay(20);
+}
+ 
